@@ -38,7 +38,7 @@ results = simulate_user_growth_and_transactions(
 )
 ```
 
-![test](https://drive.google.com/uc?export=view&id=1-0Nn_AGfnoYHKgSImkdSuHW_VtLtqKQJ)
+![](https://drive.google.com/uc?export=view&id=1-0Nn_AGfnoYHKgSImkdSuHW_VtLtqKQJ)
 
 ### Simulate Growth with BTC Hashrate
 
@@ -60,6 +60,9 @@ results = simulate_growth_with_btc_hashrate(
 )
 ```
 
+![](https://drive.google.com/uc?export=view&id=1FNqnVfpZ3ghvngYA_lOEfqExAEPgvjdy)
+
+
 ## Monte Carlo Simulation
 
 ```python
@@ -78,6 +81,8 @@ results = simulate_monte_carlo_growth(
     image_path_svg="monte_carlo_growth.svg"
 )
 ```
+
+![](https://drive.google.com/uc?export=view&id=1-9os5P6T4MlExUitSSRvrXJ2oaEUlD30)
 
 ### Monte Carlo Simulation with BTC Hashrate Influence
 
@@ -98,6 +103,10 @@ results = simulate_monte_carlo_growth_with_hashrate(
     image_path_svg="monte_carlo_hashrate.svg"
 )
 ```
+
+![](https://drive.google.com/uc?export=view&id=1-BArBGaAgavVPel1U3iX-XZukXSjX_r4)
+
+
 
 ## Parameters
 
