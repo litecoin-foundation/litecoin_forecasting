@@ -2,6 +2,40 @@
 
 This repository contains a Python library for simulating user growth and daily transactions in a system, influenced by various factors including logistic growth models and external factors like BTC hashrate. The library also includes Monte Carlo simulations to account for uncertainty and confidence intervals.
 
+---
+## Table of Contents
+
+1. [Directory Structure](#directory-structure)
+2. [Features](#features)
+3. [Installation](#installation)
+4. [Simulate User Growth and Transactions](#simulate-user-growth-and-transactions)
+    - [Simulate Growth with BTC Hashrate](#simulate-growth-with-btc-hashrate)
+5. [Monte Carlo Simulation](#monte-carlo-simulation)
+    - [Monte Carlo Simulation with BTC Hashrate Influence](#monte-carlo-simulation-with-btc-hashrate-influence)
+6. [Parameters](#parameters)
+7. [Contributors/Maintainers](#contributorsmaintainers)
+8. [Contributing](#contributing)
+9. [License](#license)
+---
+
+## Directory Structure
+
+```bash
+/project_root
+|-- /assets
+|   |-- growth_and_transactions.png
+|   |-- growth_and_transactions.png
+|   |-- growth_and_transactions_CI.png
+|   |-- growth_and_transactions_CI_hashrate.png
+|
+|-- /white_paper
+|   |-- Modeling Litecoin User Growth with Monte Carlo Simulation and Real-World Hashrate Data - Shpaner, Leonid.pdf
+|
+|-- LICENSE.MD
+|-- README.md
+|-- main.py
+```
+
 ## Features
 
 - **Simulate User Growth and Transactions**: Model user growth over time and calculate daily transactions.
@@ -11,10 +45,11 @@ This repository contains a Python library for simulating user growth and daily t
 
 ## Installation
 
-To use this library, you need Python 3.x installed. You can install the required libraries using `pip`:
+Clone the repository
 
 ```bash
-pip install numpy pandas requests matplotlib
+git clone https://github.com/litecoin-foundation/litecoin_analytics.git
+pip install -r requirements.txt
 ```
 
 ## Simulate User Growth and Transactions
