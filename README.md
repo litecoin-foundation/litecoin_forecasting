@@ -29,7 +29,7 @@ This repository contains a Python library for simulating user growth and daily t
 |   |-- growth_and_transactions_CI_hashrate.png
 |
 |-- /white_paper
-|   |-- Modeling Litecoin User Growth with Monte Carlo Simulation and Real-World Hashrate Data - Shpaner, Leonid.pdf
+|   |-- Modeling Litecoin User Growth...Shpaner,Leonid.pdf
 |
 |-- LICENSE.MD
 |-- README.md
