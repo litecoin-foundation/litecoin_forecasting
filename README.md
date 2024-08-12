@@ -38,6 +38,7 @@ results = simulate_user_growth_and_transactions(
 )
 ```
 
+![test](https://drive.google.com/uc?export=view&id=1-0Nn_AGfnoYHKgSImkdSuHW_VtLtqKQJ)
 
 ### Simulate Growth with BTC Hashrate
 
