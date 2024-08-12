@@ -112,14 +112,14 @@ results = simulate_monte_carlo_growth_with_hashrate(
 
 All functions in the library provide flexibility through several parameters. These include:
 
-- **initial_users**: Initial number of users.
-- **carrying_capacity**: Maximum number of users the system can support.
-- **growth_rate**: Growth rate per time step.
-- **usage_rate**: Proportion of users who use the system daily.
-- **time_steps**: Number of days to simulate.
-- **plot**: Whether to plot the results.
-- **return_results**: Whether to return the results as a DataFrame.
-- **save_plot**: Whether to save the generated plots.
+- `initial_users`: Initial number of users.  
+- `carrying_capacity`: Maximum number of users the system can support.  
+- `growth_rate`: Growth rate per time step.  
+- `usage_rate`: Proportion of users who use the system daily.  
+- `time_steps`: Number of days to simulate.  
+- `plot`: Whether to plot the results.  
+- `return_results`: Whether to return the results as a DataFrame.  
+- `save_plot`: Whether to save the generated plots.
 
 Refer to the docstrings within each function for detailed descriptions of all parameters.
 
