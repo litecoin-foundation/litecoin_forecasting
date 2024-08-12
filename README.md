@@ -34,6 +34,7 @@ This repository contains a Python library for simulating user growth and daily t
 |-- LICENSE.MD
 |-- README.md
 |-- main.py
+|-- requirements.txt
 ```
 
 ## Features
