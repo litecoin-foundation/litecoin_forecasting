@@ -107,7 +107,6 @@ results = simulate_monte_carlo_growth_with_hashrate(
 ![](https://drive.google.com/uc?export=view&id=1-BArBGaAgavVPel1U3iX-XZukXSjX_r4)
 
 
-
 ## Parameters
 
 All functions in the library provide flexibility through several parameters. These include:
@@ -123,10 +122,21 @@ All functions in the library provide flexibility through several parameters. The
 
 Refer to the docstrings within each function for detailed descriptions of all parameters.
 
+
+## Contributors/Maintainers
+
+<img align="left" width="150" height="150" src="https://www.leonshpaner.com/author/leon-shpaner/avatar_hu48de79c369d5f7d4ff8056a297b2c4c5_1681850_270x270_fill_q90_lanczos_center.jpg">
+
+[Leonid Shpaner](https://github.com/lshpaner) is a Data Scientist at UCLA Health. With over a decade experience in analytics and teaching, he has collaborated on a wide variety of projects within financial services, education, personal development, and healthcare. He serves as a course facilitator for Data Analytics and Applied Statistics at Cornell University and is a lecturer of Statistics in Python for the University of San Diego's M.S. Applied Artificial Intelligence program.  
+
+<br>
+<br>
+<br>
+
 ## Contributing
 
 If you would like to contribute to this project, feel free to fork the repository and submit a pull request with your changes.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://github.com/litecoin-foundation/litecoin_analytics/blob/main/LICENSE.MD).
