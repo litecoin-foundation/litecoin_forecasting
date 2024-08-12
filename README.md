@@ -8,14 +8,15 @@ This repository contains a Python library for simulating user growth and daily t
 1. [Directory Structure](#directory-structure)
 2. [Features](#features)
 3. [Installation](#installation)
-4. [Simulate User Growth and Transactions](#simulate-user-growth-and-transactions)
+4. [Usage](#usage)
+5. [Simulate User Growth and Transactions](#simulate-user-growth-and-transactions)
     - [Simulate Growth with BTC Hashrate](#simulate-growth-with-btc-hashrate)
-5. [Monte Carlo Simulation](#monte-carlo-simulation)
+6. [Monte Carlo Simulation](#monte-carlo-simulation)
     - [Monte Carlo Simulation with BTC Hashrate Influence](#monte-carlo-simulation-with-btc-hashrate-influence)
-6. [Parameters](#parameters)
-7. [Contributors/Maintainers](#contributorsmaintainers)
-8. [Contributing](#contributing)
-9. [License](#license)
+7. [Parameters](#parameters)
+8. [Contributors/Maintainers](#contributorsmaintainers)
+9. [Contributing](#contributing)
+10. [License](#license)
 ---
 
 ## Directory Structure
@@ -52,6 +53,11 @@ Clone the repository
 git clone https://github.com/litecoin-foundation/litecoin_analytics.git
 pip install -r requirements.txt
 ```
+
+## Usage 
+
+For now, you can rely on the [`main.py`](https://github.com/litecoin-foundation/litecoin_analytics/blob/main/main.py) script to access and utilize the key functions of the project. The script includes all the essential functionalities that will eventually be packaged into a standalone library.
+
 
 ## Simulate User Growth and Transactions
 
