@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import requests
 import matplotlib.pyplot as plt
+import seaborn as sns
+import textwrap
 
 
 ################################################################################
@@ -771,6 +773,366 @@ def simulate_monte_carlo_growth_with_hashrate(
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+################################################################################
+############## Correlating Actual LTC User Data with BTC Hashrate ##############
+################################################################################
+
+
+class CryptoCorrelation:
+    def __init__(
+        self,
+        api_key,
+        days=365,
+    ):
+        """
+        CryptoCorrelation Class
+
+        This class provides functionality to fetch, process, and analyze
+        the correlation between Litecoin active addresses and Bitcoin
+        hashrate. It retrieves data from the CoinMetrics and CoinGecko
+        APIs, normalizes the data if specified, and calculates the
+        correlation between the two metrics. The class can also generate
+        time series and correlation plots, with options to save the plots
+        as PNG or SVG files.
+
+        Constructor:
+        ------------
+        __init__(self, api_key, days=365)
+            Constructor to initialize the CryptoCorrelation class.
+
+            Parameters:
+            -----------
+            api_key : str
+                API key for accessing the CoinMetrics API.
+            days : int, optional
+                Number of days to fetch Bitcoin hashrate data, default is 365.
+
+        Attributes:
+        -----------
+        api_key : str
+            API key for accessing the CoinMetrics API.
+        days : int, optional
+            Number of days to fetch Bitcoin hashrate data, default is 365.
+
+        Methods:
+        --------
+        fetch_litecoin_active_addresses(coin="ltc", metric="AdrActCnt",
+                                        start_date="2023-01-01",
+                                        end_date="2024-01-01",
+                                        normalize=False)
+            Fetches Litecoin active addresses from the CoinMetrics API.
+
+        fetch_bitcoin_hashrate(normalize=False)
+            Fetches Bitcoin hashrate data from the CoinGecko API.
+
+        connect_ltc_users_to_btc_hashrate(start_date="2023-01-01",
+                                        end_date="2024-01-01",
+                                        normalize=False,
+                                        plot_type="both",
+                                        label_fontsize=14,
+                                        tick_fontsize=12,
+                                        textwrap_width=50,
+                                        save_plot=False,
+                                        image_path_png=None,
+                                        image_path_svg=None,
+                                        save_filename="crypto_correlation_plot",
+                                        bbox_inches="tight")
+            Connects Litecoin active addresses with Bitcoin hashrate,
+            calculates correlation, and generates plots.
+        """
+
+        self.api_key = api_key
+        self.days = days
+
+    def fetch_litecoin_active_addresses(
+        self,
+        coin="ltc",
+        metric="AdrActCnt",
+        start_date="2023-01-01",
+        end_date="2024-01-01",
+        normalize=False,
+    ):
+        """
+        Fetches Litecoin active addresses from the CoinMetrics API.
+
+        Parameters:
+        -----------
+        coin : str, optional
+            Cryptocurrency ticker, default is "ltc" for Litecoin.
+        metric : str, optional
+            Metric to fetch, default is "AdrActCnt" for active addresses.
+        start_date : str, optional
+            Start date for fetching data, default is "2023-01-01".
+        end_date : str, optional
+            End date for fetching data, default is "2024-01-01".
+        normalize : bool, optional
+            Whether to normalize the active addresses, default is False.
+
+        Returns:
+        --------
+        pd.DataFrame
+            DataFrame containing dates and active addresses.
+        """
+        url = (
+            f"https://community-api.coinmetrics.io/v4/"
+            f"timeseries/asset-metrics?assets={coin}&metrics={metric}&"
+            f"start_time={start_date}&end_time={end_date}"
+        )
+
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            dates = [entry["time"] for entry in data["data"]]
+            active_addresses = [float(entry[metric]) for entry in data["data"]]
+
+            df = pd.DataFrame({"Date": dates, "Active Addresses": active_addresses})
+            df["Date"] = pd.to_datetime(df["Date"])
+            df["Date"] = df["Date"].dt.tz_localize(None)  # Ensure tz-naive datetime
+            df.set_index("Date", inplace=True)
+
+            if normalize:
+                df["Active Addresses"] = (
+                    df["Active Addresses"] - df["Active Addresses"].min()
+                ) / (df["Active Addresses"].max() - df["Active Addresses"].min())
+
+            return df
+        else:
+            raise ValueError(
+                f"Error fetching data: {response.status_code} {response.text}"
+            )
+
+    def fetch_bitcoin_hashrate(self, normalize=False):
+        """
+        Fetches Bitcoin hashrate data from the CoinGecko API.
+
+        Parameters:
+        -----------
+        normalize : bool, optional
+            Whether to normalize the hashrate data, default is False.
+
+        Returns:
+        --------
+        pd.DataFrame
+            DataFrame containing dates and Bitcoin hashrate.
+        """
+        response = requests.get(
+            "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart",
+            params={"vs_currency": "usd", "days": str(self.days)},
+        )
+        if response.status_code != 200:
+            raise ValueError(
+                f"Error fetching Bitcoin data from API: {response.status_code}"
+            )
+
+        data = response.json()
+        if "prices" not in data:
+            raise KeyError(
+                "'prices' not found in the response data from " "CoinGecko API"
+            )
+
+        hashrate = np.array([item[1] for item in data["prices"]])
+        dates = pd.to_datetime([item[0] for item in data["prices"]], unit="ms")
+
+        df = pd.DataFrame({"Date": dates, "Hashrate": hashrate})
+        df["Date"] = df["Date"].dt.tz_localize(None)  # Ensure tz-naive datetime
+        df.set_index("Date", inplace=True)
+
+        if normalize:
+            df["Hashrate"] = (df["Hashrate"] - df["Hashrate"].min()) / (
+                df["Hashrate"].max() - df["Hashrate"].min()
+            )
+
+        return df
+
+    def connect_ltc_users_to_btc_hashrate(
+        self,
+        start_date="2023-01-01",
+        end_date="2024-01-01",
+        normalize=False,
+        plot_type="both",
+        label_fontsize=14,
+        tick_fontsize=12,
+        textwrap_width=50,
+        save_plot=False,
+        image_path_png=None,
+        image_path_svg=None,
+        save_filename="crypto_correlation_plot",
+        bbox_inches="tight",
+    ):
+        """
+        Connects Litecoin active addresses with Bitcoin hashrate and
+        calculates correlation.
+
+        Parameters:
+        -----------
+        start_date : str, optional
+            Start date for fetching data, default is "2023-01-01".
+        end_date : str, optional
+            End date for fetching data, default is "2024-01-01".
+        normalize : bool, optional
+            Whether to normalize the data before calculating correlation and
+            plotting, default is False.
+        plot_type : str, optional
+            Type of plot to generate: "time_series", "correlation", or "both",
+            default is "both".
+        label_fontsize : int, optional
+            Font size for labels, default is 14.
+        tick_fontsize : int, optional
+            Font size for ticks, default is 12.
+        textwrap_width : int, optional
+            Width for wrapping the text in the title, default is 50 characters.
+        save_plot : bool, optional
+            Whether to save the plots as PNG or SVG, default is False.
+        image_path_png : str, optional
+            Directory path to save PNG images, default is None.
+        image_path_svg : str, optional
+            Directory path to save SVG images, default is None.
+        save_filename : str, optional
+            Base filename to use when saving the plots, default is
+            "crypto_correlation_plot".
+        bbox_inches : str, optional
+            Bounding box to use when saving the figure, default is "tight".
+
+        Returns:
+        --------
+        pd.DataFrame, float
+            Combined DataFrame of Litecoin active addresses and Bitcoin hashrate,
+            and the correlation coefficient between them.
+        """
+        # Validate plot_type
+        valid_plot_types = ["time_series", "correlation", "both"]
+        if plot_type not in valid_plot_types:
+            raise ValueError(
+                f"Invalid plot_type: {plot_type}. Must be one of "
+                f"{valid_plot_types}."
+            )
+
+        # Check for save_plot requirement
+        if save_plot and not (image_path_png or image_path_svg):
+            raise ValueError(
+                "To save plots, you must specify at least one of "
+                "'image_path_png' or 'image_path_svg'."
+            )
+
+        # Fetch Litecoin active addresses
+        ltc_df = self.fetch_litecoin_active_addresses(
+            start_date=start_date, end_date=end_date, normalize=normalize
+        )
+
+        # Fetch Bitcoin hashrate
+        btc_df = self.fetch_bitcoin_hashrate(normalize=normalize)
+
+        # Align the data by date
+        combined_df = ltc_df.join(btc_df, how="inner")
+
+        # Calculate correlation
+        correlation = combined_df.corr().loc["Active Addresses", "Hashrate"]
+        print(
+            f"Correlation between Litecoin active addresses "
+            f"and Bitcoin hashrate: {correlation:.4f}"
+        )
+
+        normalization_status = "Normalized" if normalize else "Non-Normalized"
+
+        wrapped_title = textwrap.fill(
+            f"Litecoin Active Addresses vs Bitcoin Hashrate "
+            f"({normalization_status}, $r$ = {correlation:.4f})",
+            width=textwrap_width,
+        )
+
+        wrapped_corr_title = textwrap.fill(
+            f"Correlation between Bitcoin Hashrate and Litecoin "
+            f"Active Addresses ({normalization_status}, $r$ = {correlation:.4f})",
+            width=textwrap_width,
+        )
+
+        if plot_type in ["time_series", "both"]:
+            plt.figure(figsize=(12, 6))
+            plt.plot(
+                combined_df.index,
+                combined_df["Active Addresses"],
+                label="Litecoin Active Addresses",
+                color="blue",
+            )
+            plt.plot(
+                combined_df.index,
+                combined_df["Hashrate"],
+                label="Bitcoin Hashrate",
+                color="orange",
+            )
+            plt.xlabel("Date", fontsize=label_fontsize)
+            plt.ylabel("Values", fontsize=label_fontsize)
+            plt.title(wrapped_title, fontsize=label_fontsize)
+            plt.legend()
+            plt.xticks(fontsize=tick_fontsize)
+            plt.yticks(fontsize=tick_fontsize)
+            plt.grid(True)
+
+            if save_plot:
+                if image_path_png:
+                    plt.savefig(
+                        f"{image_path_png}/{save_filename}_time_series.png",
+                        bbox_inches=bbox_inches,
+                    )
+                if image_path_svg:
+                    plt.savefig(
+                        f"{image_path_svg}/{save_filename}_time_series.svg",
+                        bbox_inches=bbox_inches,
+                    )
+
+            plt.show()
+
+        if plot_type in ["correlation", "both"]:
+            plt.figure(figsize=(8, 6))
+            sns.regplot(
+                x=combined_df["Hashrate"],
+                y=combined_df["Active Addresses"],
+                ci=None,
+                scatter_kws={"s": 10},
+                line_kws={"color": "red"},
+            )
+
+            # Calculate equation of the line
+            slope, intercept = np.polyfit(
+                combined_df["Hashrate"], combined_df["Active Addresses"], 1
+            )
+            equation = (
+                f"y = {slope:.2f}x "
+                f"{'+' if intercept >= 0 else '-'} {abs(intercept):.2f}"
+            )
+
+            plt.xlabel("Bitcoin Hashrate", fontsize=label_fontsize)
+            plt.ylabel("Litecoin Active Addresses", fontsize=label_fontsize)
+            plt.title(wrapped_corr_title, fontsize=label_fontsize)
+
+            # Plot an invisible line just for the legend
+            plt.plot([], [], color="red", label=equation, linestyle="-")
+
+            plt.legend(loc="upper left")
+            plt.xticks(fontsize=tick_fontsize)
+            plt.yticks(fontsize=tick_fontsize)
+            plt.grid(True)
+
+            if save_plot:
+                if image_path_png:
+                    plt.savefig(
+                        f"{image_path_png}/{save_filename}_correlation.png",
+                        bbox_inches=bbox_inches,
+                    )
+                if image_path_svg:
+                    plt.savefig(
+                        f"{image_path_svg}/{save_filename}_correlation.svg",
+                        bbox_inches=bbox_inches,
+                    )
+
+            plt.show()
+
+        return combined_df, correlation
 
 
 ################################################################################
