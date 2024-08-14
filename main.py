@@ -542,6 +542,7 @@ def simulate_monte_carlo_growth_with_hashrate(
     plot_color="blue",
     plot_linestyle="-",
     fill_between_alpha=0.3,
+    random_state=None,  # Add random_state parameter for reproducibility
     **kwargs,
 ):
     def fetch_and_normalize_hashrate(days=365):
@@ -562,7 +563,18 @@ def simulate_monte_carlo_growth_with_hashrate(
             "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart",
             params={"vs_currency": "usd", "days": str(days)},
         )
+
+        # Check if the response was successful
+        if response.status_code != 200:
+            raise ValueError(
+                f"Error fetching data from CoinGecko API: {response.status_code}"
+            )
+
         data = response.json()
+
+        # Check if 'prices' is in the response data
+        if "prices" not in data:
+            raise KeyError("'prices' not found in response data from CoinGecko")
 
         # Extract and normalize the hashrate values (using prices as a proxy here)
         prices = np.array([item[1] for item in data["prices"]])
@@ -578,36 +590,16 @@ def simulate_monte_carlo_growth_with_hashrate(
         )
 
     try:
+        # Set the random seed for reproducibility
+        if random_state is not None:
+            np.random.seed(random_state)
+
         # Fetch and normalize BTC hashrate data
         btc_hashrate_data = fetch_and_normalize_hashrate(days=days)
 
-        # Normalize and process hashrate data
-        btc_hashrate_normalized = btc_hashrate_data
-
-        # Divide the hashrate data into quarters if x_axis is quarters
-        if x_axis == "quarters":
-            days_in_quarter = time_steps // 4
-            btc_hashrate_quarters = [
-                btc_hashrate_normalized[:days_in_quarter],
-                btc_hashrate_normalized[days_in_quarter : 2 * days_in_quarter],
-                btc_hashrate_normalized[2 * days_in_quarter : 3 * days_in_quarter],
-                btc_hashrate_normalized[3 * days_in_quarter : 4 * days_in_quarter],
-            ]
-            btc_hashrate_for_simulation = np.concatenate(btc_hashrate_quarters)
-        else:
-            btc_hashrate_for_simulation = btc_hashrate_normalized
-
-        # Convert single values to lists for consistency
-        if isinstance(confidence_levels, (float, int)):
-            confidence_levels = [confidence_levels]
-        if isinstance(confidence_colors, str):
-            confidence_colors = [confidence_colors]
-
-        if len(confidence_colors) != len(confidence_levels):
-            raise ValueError(
-                f"The number of confidence colors must match the "
-                f"number of confidence levels."
-            )
+        # Adjust the time_steps to match the hashrate data length
+        if len(btc_hashrate_data) != time_steps:
+            time_steps = len(btc_hashrate_data)
 
         # Set up the x-axis based on user input
         if x_axis == "days":
@@ -631,6 +623,23 @@ def simulate_monte_carlo_growth_with_hashrate(
         else:
             raise ValueError(
                 "`x_axis` must be one of 'days', 'quarters', or 'datetime'."
+            )
+
+        # Normalize and process hashrate data
+        btc_hashrate_for_simulation = btc_hashrate_data[
+            :time_steps
+        ]  # Ensure matching length
+
+        # Convert single values to lists for consistency
+        if isinstance(confidence_levels, (float, int)):
+            confidence_levels = [confidence_levels]
+        if isinstance(confidence_colors, str):
+            confidence_colors = [confidence_colors]
+
+        if len(confidence_colors) != len(confidence_levels):
+            raise ValueError(
+                f"The number of confidence colors must match the "
+                f"number of confidence levels."
             )
 
         # Raise error if save_plot is True but no image path is provided
@@ -672,6 +681,20 @@ def simulate_monte_carlo_growth_with_hashrate(
 
         # Calculate the median prediction
         median_prediction = np.median(all_users, axis=0)
+
+        # Prepare a DataFrame for correlation calculation
+        correlation_df = pd.DataFrame(
+            {
+                "Hashrate": btc_hashrate_for_simulation,
+                "MedianUserGrowth": median_prediction,
+            }
+        )
+
+        # Calculate correlation using pandas .corr() method
+        correlation = correlation_df.corr().loc["Hashrate", "MedianUserGrowth"]
+        print(
+            f"Correlation between hash rate and median user growth: {correlation:.4f}"
+        )
 
         # Prepare DataFrame with results
         results_df = pd.DataFrame(
