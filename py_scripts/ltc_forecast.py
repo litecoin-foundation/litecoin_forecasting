@@ -4,8 +4,10 @@ if __name__ == "__main__":
     import os
     import sys
 
-    # Add the directory containing the `main.py` file to the system path
-    sys.path.append(os.pardir)
+    # Add the 'src' directory to the Python path
+    sys.path.append(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "../src"),
+    )
 
     from main import CryptoCorrelation
     from eda_toolkit import ensure_directory

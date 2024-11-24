@@ -33,4 +33,4 @@ classifiers = [
 "GitHub Repository" = "https://github.com/litecoin-foundation/litecoin_forecasting/"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
