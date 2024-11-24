@@ -818,7 +818,7 @@ class CryptoCorrelation:
 
         Methods:
         --------
-        fetch_litecoin_active_addresses(coin="ltc", metric="AdrActCnt",
+            fetch_coin_active_addresses(coin="ltc", metric="AdrActCnt",
                                         start_date="2023-01-01",
                                         end_date="2024-01-01",
                                         normalize=False)
@@ -827,7 +827,7 @@ class CryptoCorrelation:
         fetch_bitcoin_hashrate(normalize=False)
             Fetches Bitcoin hashrate data from the CoinGecko API.
 
-        connect_ltc_users_to_btc_hashrate(start_date="2023-01-01",
+            connect_coin_users_to_btc_hashrate(start_date="2023-01-01",
                                         end_date="2024-01-01",
                                         normalize=False,
                                         plot_type="both",
@@ -846,7 +846,7 @@ class CryptoCorrelation:
         self.api_key = api_key
         self.days = days
 
-    def fetch_litecoin_active_addresses(
+    def fetch_coin_active_addresses(
         self,
         coin="ltc",
         metric="AdrActCnt",
@@ -949,7 +949,7 @@ class CryptoCorrelation:
 
         return df
 
-    def connect_ltc_users_to_btc_hashrate(
+    def connect_coin_users_to_btc_hashrate(
         self,
         start_date="2023-01-01",
         end_date="2024-01-01",
@@ -1019,8 +1019,8 @@ class CryptoCorrelation:
                 "'image_path_png' or 'image_path_svg'."
             )
 
-        # Fetch Litecoin active addresses
-        ltc_df = self.fetch_litecoin_active_addresses(
+        # Fetch cryptocurrency's active addresses
+        crypto_df = self.fetch_coin_active_addresses(
             start_date=start_date, end_date=end_date, normalize=normalize
         )
 
@@ -1028,7 +1028,7 @@ class CryptoCorrelation:
         btc_df = self.fetch_bitcoin_hashrate(normalize=normalize)
 
         # Align the data by date
-        combined_df = ltc_df.join(btc_df, how="inner")
+        combined_df = crypto_df.join(btc_df, how="inner")
 
         # Calculate correlation
         correlation = combined_df.corr().loc["Active Addresses", "Hashrate"]
