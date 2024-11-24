@@ -3,11 +3,12 @@ if __name__ == "__main__":
     ## Import the necessary libraries
     import os
     import sys
-    from main import CryptoCorrelation
-    from eda_toolkit import ensure_directory
 
     # Add the directory containing the `main.py` file to the system path
     sys.path.append(os.pardir)
+
+    from main import CryptoCorrelation
+    from eda_toolkit import ensure_directory
 
     base_path = os.path.join(os.pardir)
 
