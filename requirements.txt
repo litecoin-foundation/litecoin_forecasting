@@ -1,46 +1,46 @@
 
 ################################# Python 3.8 ###################################
 
-matplotlib==3.7.5
-numpy==1.24.4
+# matplotlib==3.7.5
+# numpy==1.24.4
 
-e .
+# e .
 
-pandas==2.0.3
-requests==2.32.3
-selenium==4.26.1
+# pandas==2.0.3
+# requests==2.32.0
+# selenium==4.26.1
 
 ################################# Python 3.9 ###################################
 
-matplotlib==3.8.0
-numpy==1.26.0
+# matplotlib==3.8.0
+# numpy==1.26.0
 
-e .
+# e .
 
-pandas==2.1.2
-requests==2.32.3
-selenium==4.27.1
+# pandas==2.1.2
+# requests==2.32.0
+# selenium==4.26.1
 
 
 ################################# Python 3.10 ##################################
 
-matplotlib==3.8.0
-numpy==1.26.4
+# matplotlib==3.8.0
+# numpy==1.26.4
 
-e .
+# e .
 
-pandas==2.2.2
-requests==2.33.0
-selenium==4.27.1
+# pandas==2.2.2
+# requests==2.32.0
+# selenium==4.26.1
 
 ################################# Python 3.11+ #################################
 
 matplotlib==3.8.0
 numpy==1.26.4
 
-e .
+# e .
 
 pandas==2.2.3
-requests==2.33.0
-selenium==4.27.1
+requests==2.32.0
+selenium==4.26.1
 
