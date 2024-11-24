@@ -823,10 +823,8 @@ class CryptoCorrelation:
                                         end_date="2024-01-01",
                                         normalize=False)
             Fetches Litecoin active addresses from the CoinMetrics API.
-
-        fetch_bitcoin_hashrate(normalize=False)
+            fetch_bitcoin_hashrate(normalize=False)
             Fetches Bitcoin hashrate data from the CoinGecko API.
-
             connect_coin_users_to_btc_hashrate(start_date="2023-01-01",
                                         end_date="2024-01-01",
                                         normalize=False,
