@@ -30,7 +30,7 @@ classifiers = [
 # Correct place for URLs under [project.urls]
 [project.urls]
 "Author Website" = "https://www.leonshpaner.com"
-"Litewallet Website" = "https://litewallet.io/""
+"Litewallet Website" = "https://litewallet.io/#team"
 "GitHub Repository" = "https://github.com/litecoin-foundation/litecoin_forecasting/"
 
 [tool.setuptools.packages.find]
