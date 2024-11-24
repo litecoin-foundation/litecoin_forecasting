@@ -5,11 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "lite_sim"
 version = "0.0.1a"
-description = "A Python library for cryptocurrency forecasting using hashrate and active addresses"
+description = "A Python library for cryptocurrency forecasting using hashrate and active addresses."
 readme = { file = "README_min.md", content-type = "text/markdown" }
 authors = [
-    { name = "Leonid Shpaner", email = "lshpaner@ucla.edu" },
-    { name = "Oscar Gil" }
+    { name = "Leonid Shpaner", email = "lshpaner@ucla.edu" }
 ]
 requires-python = ">=3.7.4"
 dependencies = [
